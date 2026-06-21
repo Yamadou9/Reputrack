@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.query_generator import generate_queries
+from services.scraper import scrape
+from services.curator import curate
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,5 +20,6 @@ app.add_middleware(
 def search(data: dict):
   marque = data["marque"]
   queries = generate_queries(marque)
-  print(queries)
-  return {"queries": queries}
+  scrape_result = scrape(queries)
+  result = curate(marque, scrape_result)
+  return result
